@@ -1,0 +1,52 @@
+rules_version = '2';
+// Draft Firestore Security Rules for the production backend (section 41).
+// Roles are stored as Firebase Auth custom claims: request.auth.token.role
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function role() { return request.auth.token.role; }
+    function isAdmin() { return signedIn() && role() in ['super_admin', 'exec_admin']; }
+    function isHR() { return isAdmin() || (signedIn() && role() == 'hr'); }
+    function isFinance() { return signedIn() && role() in ['super_admin', 'finance']; }
+    function isLead() { return isHR() || (signedIn() && role() in ['committee_manager', 'team_leader']); }
+
+    // Public content
+    match /news/{id}          { allow read: if true; allow write: if isAdmin(); }
+    match /events/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /committees/{id}    { allow read: if true; allow write: if isHR(); }
+    match /teams/{id}         { allow read: if true; allow write: if isHR(); }
+    match /certificates/{id}  { allow read: if true; allow write: if isHR(); }   // public verification
+
+    // Anyone may apply; only HR can read or process applications
+    match /join_requests/{id} {
+      allow create: if request.resource.data.status == 'pending';
+      allow read, update, delete: if isHR();
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn();
+      // Members can edit their own profile but never role, points or level
+      allow update: if signedIn() && request.auth.uid == uid &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'points', 'level']);
+      allow write: if isHR();
+    }
+
+    // Points engine: leads propose, HR/admin approve — never your own proposal
+    match /point_transactions/{id} {
+      allow read: if signedIn() && (resource.data.user == request.auth.uid || isLead());
+      allow create: if isLead() && request.resource.data.status == 'pending' && request.resource.data.by == request.auth.uid;
+      allow update: if isHR() && resource.data.status == 'pending'
+        && resource.data.by != request.auth.uid && resource.data.user != request.auth.uid;
+    }
+
+    match /tasks/{id}     { allow read: if signedIn(); allow create: if isLead(); allow update: if isLead() || resource.data.assignee == request.auth.uid; }
+    match /meetings/{id}  { allow read: if signedIn(); allow write: if isLead(); }
+    match /reports/{id}   { allow read: if isLead(); allow create: if isLead(); }
+    match /financial_transactions/{id} { allow read, write: if isFinance(); }
+    match /settings/{id}  { allow read: if signedIn(); allow write: if role() == 'super_admin'; }
+    match /notifications/{id} { allow read, update: if signedIn() && resource.data.user == request.auth.uid; }
+
+    // Audit log: append-only, written by Cloud Functions (Admin SDK bypasses rules)
+    match /audit_logs/{id} { allow read: if isAdmin(); allow write: if false; }
+  }
+}

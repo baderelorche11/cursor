@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="إشراقة وعي">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8CF8A"/>
+      <stop offset="1" stop-color="#B8893A"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="57" fill="#0B3D2A" stroke="url(#g)" stroke-width="4"/>
+  <g stroke="url(#g)" stroke-width="4" stroke-linecap="round">
+    <line x1="60" y1="22" x2="60" y2="34"/>
+    <line x1="33" y1="33" x2="41" y2="41"/>
+    <line x1="87" y1="33" x2="79" y2="41"/>
+    <line x1="22" y1="60" x2="33" y2="60"/>
+    <line x1="98" y1="60" x2="87" y2="60"/>
+  </g>
+  <path d="M36 74a24 24 0 0 1 48 0z" fill="url(#g)"/>
+  <rect x="24" y="78" width="72" height="4" rx="2" fill="url(#g)"/>
+  <rect x="34" y="87" width="52" height="3" rx="1.5" fill="#E8CF8A" opacity=".7"/>
+</svg>
