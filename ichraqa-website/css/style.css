@@ -26,12 +26,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0C1612; --surface: #13211B; --ink: #EEF3EF; --ink-2: #B9C7BF; --muted: #8D9C94;
-    --line: #243A30; --green-soft: #173327; --gold-soft: #2E2715;
+    --line: #243A30; --green-soft: #173327; --gold-soft: #2E2715; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0C1612; --surface: #13211B; --ink: #EEF3EF; --ink-2: #B9C7BF; --muted: #8D9C94;
-  --line: #243A30; --green-soft: #173327; --gold-soft: #2E2715;
+  --line: #243A30; --green-soft: #173327; --gold-soft: #2E2715; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -59,7 +59,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
 /* ===== Header ===== */
-.site-header { position: sticky; top: 0; z-index: 50; background: rgba(7, 42, 29, .96); backdrop-filter: blur(8px); color: #fff; border-bottom: 1px solid rgba(201, 162, 74, .35); }
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: rgba(7, 42, 29, .96); backdrop-filter: blur(8px); color: #fff; border-bottom: 1px solid rgba(201, 162, 74, .35); }
 .site-header .container { display: flex; align-items: center; gap: 16px; min-height: 72px; }
 .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .brand img { width: 46px; height: 46px; }
@@ -241,7 +241,7 @@ tr:last-child td { border-bottom: 0; }
 .side nav .grp { font-size: .75rem; color: var(--gold); opacity: .75; padding: 14px 12px 4px; font-weight: 800; }
 .side nav a .count { margin-inline-start: auto; background: var(--gold); color: var(--green-deep); border-radius: 999px; font-size: .72rem; padding: 0 7px; font-weight: 800; }
 .dmain { min-width: 0; }
-.dtop { display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+.dtop { display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; }
 .dtop .icon-btn { color: var(--ink); border-color: var(--line); }
 .dtop .who { display: flex; align-items: center; gap: 10px; margin-inline-start: auto; }
 .dtop .who small { display: block; color: var(--muted); font-size: .78rem; line-height: 1.2; }

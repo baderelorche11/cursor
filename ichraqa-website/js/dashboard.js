@@ -249,7 +249,7 @@ window.Dashboard = (function () {
       const present = m.participants.filter((p) => m.attendance[p] === true).map((p) => Store.userName(p));
       modal(`<h3>محضر ${esc(m.title)}</h3><p><b>التاريخ:</b> ${fmtDate(m.date)} — ${esc(m.time)}</p><p><b>الحضور:</b> ${esc(present.join('، ') || 'لم يسجل بعد')}</p>
         <p><b>جدول الأعمال:</b></p><ol>${m.agenda.map((x) => `<li>${esc(x)}</li>`).join('')}</ol><p><b>القرارات:</b></p><ol>${m.decisions.map((x) => `<li>${esc(x)}</li>`).join('') || '<li>—</li>'}</ol>
-        <p><b>المهام:</b></p><ol>${m.tasks.map((x) => `<li>${esc(x)}</li>`).join('') || '<li>—</li>'}</ol><div style="display:flex;gap:10px"><button class="btn btn-green" onclick="window.print()">طباعة</button><button class="btn btn-ghost" data-close>إغلاق</button></div>`);
+        <p><b>المهام:</b></p><ol>${m.tasks.map((x) => `<li>${esc(x)}</li>`).join('') || '<li>—</li>'}</ol><button class="btn btn-ghost" data-close>إغلاق</button>`);
     }));
     const nb = root.querySelector('#new-meeting');
     if (nb) nb.addEventListener('click', () => modal(`<h3>اجتماع جديد</h3><form class="form">
@@ -482,7 +482,11 @@ window.Dashboard = (function () {
       s.membershipTypes = f.types.value.split(/[،,]/).map((x) => x.trim()).filter(Boolean);
       Store.log(me.id, 'تعديل الإعدادات العامة', 'الإعدادات'); toast('✓ تم الحفظ');
     });
-    q('reset-demo').addEventListener('click', () => { if (confirm('إعادة كل البيانات إلى حالتها الأولى؟')) { Store.reset(); location.hash = '#/login'; } });
+    q('reset-demo').addEventListener('click', (e) => {
+      const b = e.currentTarget;
+      if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'اضغط مرة أخرى للتأكيد'; return; }
+      Store.reset(); location.hash = '#/login';
+    });
   }
 
   /* Page registry: [key, icon, label, group, visible(me)] */
